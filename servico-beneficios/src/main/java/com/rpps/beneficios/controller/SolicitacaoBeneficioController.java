@@ -60,6 +60,26 @@ public class SolicitacaoBeneficioController {
     }
 
 
+    @GetMapping("")
+    public ResponseEntity<List<SolicitacaoBeneficioDTO>> listarSolicitacoesAtivas() {
+        List<SolicitacaoBeneficioDTO> dtos = solicitacaoBeneficioService.listarSolicitacoesAtivas()
+                .stream()
+                .map(s -> new SolicitacaoBeneficioDTO(
+                        s.getCpf(),
+                        s.getTempoContribuicaoCalculado(),
+                        s.getValorConcedido(),
+                        s.getStatus(),
+                        s.getMensagem(),
+                        s.getTotalBeneficios(),
+                        s.getTipoBeneficio(),
+                        s.isAtivo()
+                ))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(dtos);
+    }
+
+
 
 
 
