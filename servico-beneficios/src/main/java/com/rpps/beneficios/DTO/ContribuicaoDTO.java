@@ -16,7 +16,20 @@ public class ContribuicaoDTO {
     private int idContribuicao;
     private int idContribuinte;
     private LocalDate dataContribuicao;
-    private double valorContribuicao;
-    private LocalDate dataReferente;
+    private BigDecimal valorContribuicao;
+    private LocalDate dataReferencia;
     private int idSalarioMinimo;
 }
+
+
+// contribuiçãoDTO do pedro
+
+//Long idContribuicao,
+//@NotNull(message = "Id contribuinte não pode ser null")
+//Long idContribuinte,
+//LocalDate dataContribuicao,
+//BigDecimal valorContribuicao,
+//@NotNull(message = "A data referente a contribuição é obrigatória")
+//LocalDate dataReferencia,
+//Long idSalarioMinimo
+//                              )

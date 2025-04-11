@@ -13,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.math.BigDecimal;
 
 
 @Entity
@@ -25,14 +26,15 @@ public class SolicitacaoBeneficio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int idSolicitacao;
     private String cpf;
     private int tempoContribuicaoCalculado;
-    private double valorMedioContribuicoes;
-    private double valorConcedido;
+    private BigDecimal valorMedioContribuicoes;
+    private BigDecimal valorConcedido;
     private String status;
     private String mensagem;
-    private double totalBeneficios;
+    private BigDecimal totalBeneficios;
     private String tipoBeneficio;
     private boolean ativo = true;
 }
