@@ -2,18 +2,13 @@ package com.rpps.beneficios.controller;
 
 
 import com.rpps.beneficios.DTO.CriarSolicitacaoBeneficioDTO;
-import com.rpps.beneficios.DTO.SolicitacaoBeneficioDTO;
+import com.rpps.beneficios.DTO.RetornarSolicitacaoBeneficioDTO;
 import com.rpps.beneficios.DTO.TotalBeneficiosPorCpfDTO;
-import com.rpps.beneficios.model.SolicitacaoBeneficio;
 import com.rpps.beneficios.service.SolicitacaoBeneficioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/beneficios/solicitacao")
@@ -30,8 +25,8 @@ public class SolicitacaoBeneficioController {
 
     // endpoint para criar solicitação e já analisá-las
     @PostMapping
-    public ResponseEntity<SolicitacaoBeneficioDTO> criarSolicitacao(@RequestBody CriarSolicitacaoBeneficioDTO dto) {
-        SolicitacaoBeneficioDTO resposta = solicitacaoBeneficioService.criarSolicitacao(dto);
+    public ResponseEntity<RetornarSolicitacaoBeneficioDTO> criarSolicitacao(@RequestBody CriarSolicitacaoBeneficioDTO dto) {
+        RetornarSolicitacaoBeneficioDTO resposta = solicitacaoBeneficioService.criarSolicitacao(dto);
         return ResponseEntity.status(201).body(resposta);
     }
 

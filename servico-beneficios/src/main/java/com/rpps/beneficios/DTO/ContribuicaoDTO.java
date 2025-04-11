@@ -22,14 +22,3 @@ public class ContribuicaoDTO {
 }
 
 
-// contribuiçãoDTO do pedro
-
-//Long idContribuicao,
-//@NotNull(message = "Id contribuinte não pode ser null")
-//Long idContribuinte,
-//LocalDate dataContribuicao,
-//BigDecimal valorContribuicao,
-//@NotNull(message = "A data referente a contribuição é obrigatória")
-//LocalDate dataReferencia,
-//Long idSalarioMinimo
-//                              )

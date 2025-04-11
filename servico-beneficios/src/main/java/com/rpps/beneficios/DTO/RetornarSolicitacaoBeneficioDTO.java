@@ -12,7 +12,7 @@ import java.math.RoundingMode;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class SolicitacaoBeneficioDTO {
+public class RetornarSolicitacaoBeneficioDTO {
 
     private String cpf;
     private int tempoContribuicaoCalculado;

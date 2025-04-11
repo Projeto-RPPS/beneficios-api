@@ -18,7 +18,6 @@ import java.util.Optional;
 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +40,7 @@ public class SolicitacaoBeneficioService {
 
 
     // cria solicitação e já fazer a analise da solicitado do beneficio
-    public SolicitacaoBeneficioDTO criarSolicitacao(CriarSolicitacaoBeneficioDTO dto) {
+    public RetornarSolicitacaoBeneficioDTO criarSolicitacao(CriarSolicitacaoBeneficioDTO dto) {
         String cpf = dto.getCpf();
         int beneficioId = dto.getBeneficioId();
 
@@ -96,7 +95,7 @@ public class SolicitacaoBeneficioService {
             solicitacaoBeneficioRepository.save(solicitacao);
 
             // Retorna DTO com os dados relevantes
-            return new SolicitacaoBeneficioDTO(
+            return new RetornarSolicitacaoBeneficioDTO(
                     cpf,
                     totalMeses,
                     valorConcedido,
@@ -148,10 +147,6 @@ public TotalBeneficiosPorCpfDTO calcularTotalDeBeneficiosPorCpf(String cpf) {
 
     return new TotalBeneficiosPorCpfDTO(cpf, status, total);
 }
-
-
-
-
 
 
 
