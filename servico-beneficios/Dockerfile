@@ -1,5 +1,5 @@
 # Etapa 1: build do projeto
-FROM maven:3.9.4-eclipse-temurin-17 AS builder
+FROM maven:3.9.4-eclipse-temurin-21 AS builder
 
 # Diretório de trabalho no container
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # Etapa 2: rodar o JAR
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:21-jdk-alpine
 
 # Define o diretório de trabalho
 WORKDIR /app

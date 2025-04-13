@@ -1,0 +1,15 @@
+com\rpps\beneficios\service\SolicitacaoBeneficioService.class
+com\rpps\beneficios\controller\BeneficioController.class
+com\rpps\beneficios\controller\SolicitacaoBeneficioController.class
+com\rpps\beneficios\DTO\TotalBeneficiosPorCpfDTO.class
+com\rpps\beneficios\DTO\CriarSolicitacaoBeneficioDTO.class
+com\rpps\beneficios\DTO\RetornarSolicitacaoBeneficioDTO.class
+com\rpps\beneficios\model\SolicitacaoBeneficio.class
+com\rpps\beneficios\repository\SolicitacaoBeneficioRepository.class
+com\rpps\beneficios\service\BeneficioService.class
+com\rpps\beneficios\config\AppConfig.class
+com\rpps\beneficios\DTO\BeneficioDTO.class
+com\rpps\beneficios\ServicoBeneficiosApplication.class
+com\rpps\beneficios\model\Beneficio.class
+com\rpps\beneficios\repository\BeneficioRepository.class
+com\rpps\beneficios\DTO\ContribuicaoDTO.class

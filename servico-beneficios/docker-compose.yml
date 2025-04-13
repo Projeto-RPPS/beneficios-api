@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres
+    container_name: postgres_beneficios
+    restart: always
+    environment:
+      POSTGRES_USER: beneficios_user
+      POSTGRES_PASSWORD: beneficios_pass
+      POSTGRES_DB: beneficios_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+
+  api:
+    build:
+      context: . # pasta que contém o Dockerfile
+    ports:
+      - "8087:8087"
+    depends_on:
+      - postgres
+    environment:
+      DATASOURCE_URL: jdbc:postgres://localhost:5432/beneficios_db
+      POSTGRES_USER: beneficios_user
+      POSTGRES_PASSWORD: beneficios_pass
+      POSTGRES_DB: beneficios_db
+
+
+
+
+volumes:
+  postgres_data:
+
+
