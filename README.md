@@ -1,4 +1,4 @@
-# Beneficios - Containerized API com Docker Compose
+# Beneficios - API EM CONTÊINER
 
 
 Esta versão da aplicação `SBeneficios` está preparada para ser executada completamente em **containers Docker**, facilitando o deploy e o ambiente de desenvolvimento. Inclui dois serviços principais: a **API de Benefícios** e o **banco de dados PostgreSQL**.
