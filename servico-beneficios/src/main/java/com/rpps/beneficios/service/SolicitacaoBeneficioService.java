@@ -54,7 +54,7 @@ public class SolicitacaoBeneficioService {
 
         try {
             // Chamada para API de Contribuições (Pedro)
-            String url = "http://localhost:8083/contribuicoes/cpf/" + cpf;
+            String url = "http://rpps_api:8084/contribuicoes/cpf/" + cpf;
             ResponseEntity<ContribuicaoDTO[]> response = restTemplate.getForEntity(url, ContribuicaoDTO[].class);
 
 //            HttpEntityConect api_pedro = new 8888(host, port)

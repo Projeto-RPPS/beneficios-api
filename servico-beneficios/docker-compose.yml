@@ -22,7 +22,7 @@ services:
     depends_on:
       - postgres
     environment:
-      DATASOURCE_URL: jdbc:postgres://localhost:5432/beneficios_db
+      DATASOURCE_URL: jdbc:postgresql://postgres:5432/beneficios_db
       POSTGRES_USER: beneficios_user
       POSTGRES_PASSWORD: beneficios_pass
       POSTGRES_DB: beneficios_db
