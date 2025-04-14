@@ -1,0 +1,39 @@
+# Compiled class files
+*.class
+
+# Maven target directory
+/target/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# VS Code
+.vscode/
+
+# Environment
+.env
+
+# Database files
+*.h2.db
+*.mv.db
+
+# Others
+*.jar
+*.war
+*.ear
