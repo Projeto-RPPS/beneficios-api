@@ -20,7 +20,7 @@ services:
   api:
     build:
       context: . # pasta que contém o Dockerfile
-    container_name: beneficios_api
+    container_name: beneficios-api
     ports:
       - "8087:8087"
     networks:
