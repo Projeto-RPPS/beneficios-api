@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -54,7 +56,7 @@ public class SolicitacaoBeneficioService {
 
         try {
             // Chamada para API de Contribuições (Pedro)
-            String url = "http://rpps_api:8084/contribuicoes/cpf/" + cpf;
+            String url = "http://rpps-api:8084/contribuicoes/cpf/" + URLEncoder.encode(cpf, StandardCharsets.UTF_8);
             ResponseEntity<ContribuicaoDTO[]> response = restTemplate.getForEntity(url, ContribuicaoDTO[].class);
 
 //            HttpEntityConect api_pedro = new 8888(host, port)
