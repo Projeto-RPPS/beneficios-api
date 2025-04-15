@@ -1,113 +1,85 @@
-# Beneficios - API EM CONTÊINER
+# ServicoBeneficios API
 
-
-Esta versão da aplicação `SBeneficios` está preparada para ser executada completamente em **containers Docker**, facilitando o deploy e o ambiente de desenvolvimento. Inclui dois serviços principais: a **API de Benefícios** e o **banco de dados PostgreSQL**.
-
+Esta é a API REST do sistema de benefícios do projeto RPPS. Ela permite o gerenciamento de solicitações de benefícios, incluindo criação, listagem, desativação e cálculo de totais por CPF.
 
 ---
 
+## 📊 Tecnologias Utilizadas
 
-## 🧱 Tecnologias Utilizadas
-
-
-- Java 21
-- Spring Boot 3.4.4
-- Spring Data JPA
-- PostgreSQL
-- Docker e Docker Compose
-- Springdoc OpenAPI (Swagger)
+- Java 21  
+- Spring Boot 3.4.4  
+- Spring Data JPA  
+- PostgreSQL  
+- Docker e Docker Compose  
+- OpenAPI 3 (via Springdoc)  
+- Swagger UI  
 - Lombok
 
-
 ---
 
+## 🛠️ Como Executar com Docker
 
-## 🐳 Estrutura Docker Compose
-
-
-O arquivo `docker-compose.yml` define dois serviços:
-
-
-### `postgres`
-- Imagem: `postgres`
-- Porta exposta: `5434:5432`
-- Variáveis de ambiente:
-  - `POSTGRES_USER=beneficios_user`
-  - `POSTGRES_PASSWORD=beneficios_pass`
-  - `POSTGRES_DB=beneficios_db`
-- Volume persistente: `postgres_data`
-
-
-### `api`
-- Build do Dockerfile local
-- Porta exposta: `8087:8087`
-- Depende do serviço `postgres`
-- Variáveis de ambiente para conexão com o banco:
-  - `DATASOURCE_URL=jdbc:postgresql://postgres:5432/beneficios_db`
-  - `POSTGRES_USER=beneficios_user`
-  - `POSTGRES_PASSWORD=beneficios_pass`
-  - `SERVER_PORT=8087`
-
-
----
-
-
-## ▶️ Como Executar com Docker Compose
-
-
-1. **Clone o repositório**
+### 1. Clonar o projeto
 ```bash
-git clone https://github.com/Projeto-RPPS/beneficios-api
+git clone https://github.com/Projeto-RPPS/beneficios-api.git
 cd beneficios-api
 ```
 
+### 2. Criar o arquivo `.env`
+Crie um arquivo chamado `.env` na raiz do projeto com o seguinte conteúdo:
+```env
+# Variáveis do PostgreSQL
+POSTGRES_USER=beneficios_user
+POSTGRES_PASSWORD=beneficios_pass
+POSTGRES_DB=beneficios_db
 
-2. **Suba os containers com build**
+# Nome da aplicação Spring (opcional)
+spring.application.name=ServicoBeneficios
+```
+
+### 3. Subir a aplicação e banco com Docker Compose
 ```bash
 docker-compose up --build
 ```
 
-
-3. A API estará disponível em: [http://localhost:8087](http://localhost:8087)  
-   A documentação Swagger estará em: [http://localhost:8087/swagger-ui.html](http://localhost:8087/swagger-ui.html)
+A API estará acessível na porta **8087** e o banco de dados na porta **5434**.
 
 
 ---
 
+## 🔗 Endpoints Disponíveis
 
-## 📘 Endpoints Principais
+### ✨ BenefícioController
 
+- `POST /beneficios`  — Cria um novo benefício
+- `GET /beneficios`  — Lista todos os benefícios
+- `PATCH /beneficios/{id}`  — Atualiza os dados de um benefício
+- `PATCH /beneficios/{id}/desativar`  — Desativa logicamente um benefício
 
-### Solicitações de Benefício
+### ✉️ SolicitacaoBeneficioController
 
-
-- `POST /beneficios/solicitacao` - Cria nova solicitação e analisa
-- `PATCH /beneficios/solicitacao/desativar/{id}` - Desativa logicamente uma solicitação
-- `GET /beneficios/solicitacao` - Lista solicitações ativas
-- `GET /beneficios/solicitacao/cpf/{cpf}/total` - Retorna total de benefícios de um CPF
-
-
-### Benefícios
-
-
-- `POST /beneficios` - Cria novo benefício
-- `GET /beneficios` - Lista todos os benefícios
-- `PATCH /beneficios/{id}` - Atualiza um benefício
-- `PATCH /beneficios/{id}/desativar` - Desativa logicamente um benefício
-
+- `POST /beneficios/solicitacao`  — Cria uma nova solicitação de benefício (com análise automática)
+- `GET /beneficios/solicitacao`  — Lista todas as solicitações ativas
+- `PATCH /beneficios/solicitacao/desativar/{id}`  — Desativa logicamente uma solicitação de benefício
+- `GET /beneficios/solicitacao/cpf/{cpf}/total`  — Calcula o total de benefícios para um determinado CPF
 
 ---
 
+## 📄 Documentação Swagger (OpenAPI)
 
-## 📌 Considerações Finais
+Após subir a aplicação com sucesso:
+- Acesse: [http://localhost:8087/swagger-ui.html](http://localhost:8087/swagger-ui.html)
+- Documentação JSON: [http://localhost:8087/v3/api-docs](http://localhost:8087/v3/api-docs)
 
-
-- A aplicação já vem pronta para uso com Docker Compose.
-- Certifique-se de que as portas `5434` (PostgreSQL) e `8087` (API) estejam livres em sua máquina.
-- A URL de acesso à API e à interface Swagger pode variar caso esteja usando WSL ou Docker Desktop em outro SO.
-
+> Obs: Certifique-se de que a dependência `springdoc-openapi-starter-webmvc-ui` está corretamente adicionada no `pom.xml` com a versão `2.2.0` ou superior.
 
 ---
 
+## ✅ Considerações Finais
 
-Para dúvidas ou melhorias, abra uma issue no repositório ou entre em contato com o time de desenvolvimento do Projeto RPPS.
+- Verifique se todas as dependências estão corretamente configuradas.  
+- Certifique-se de que os endpoints `/v3/api-docs` e `/swagger-ui.html` estão acessíveis.  
+- Em caso de problemas com o Swagger, consulte a [documentação oficial do Springdoc](https://springdoc.org/).
+
+
+
