@@ -59,9 +59,6 @@ public class SolicitacaoBeneficioService {
             String url = "http://rpps-api:8084/contribuicoes/cpf/" + URLEncoder.encode(cpf, StandardCharsets.UTF_8);
             ResponseEntity<ContribuicaoDTO[]> response = restTemplate.getForEntity(url, ContribuicaoDTO[].class);
 
-//            HttpEntityConect api_pedro = new 8888(host, port)
-//            var res = api_pedro.connect;
-
 
             List<ContribuicaoDTO> contribuicoes = Arrays.asList(response.getBody());
 
