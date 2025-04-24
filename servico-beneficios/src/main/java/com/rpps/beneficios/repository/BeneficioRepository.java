@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface BeneficioRepository extends JpaRepository<Beneficio, Integer> {
 
-    // Método para listar apenas os benefícios ativos
+
     List<Beneficio> findByAtivoTrue();
    
 }

@@ -112,17 +112,17 @@ public class SolicitacaoBeneficioService {
 
 
 
-    // lista solicitação
-    public List<SolicitacaoBeneficio> listarSolicitacoesAtivas() {
-        return solicitacaoBeneficioRepository.findAll().stream()
-                .filter(SolicitacaoBeneficio::isAtivo)
-                .collect(Collectors.toList());
+    // lista todas as solicitações (ativas e desativadas)
+    public List<SolicitacaoBeneficio> listarTodas() {
+        return solicitacaoBeneficioRepository.findAll();
     }
+
 
 
     public boolean desativarSolicitacao(int id) {
         return solicitacaoBeneficioRepository.findById(id).map(solicitacao -> {
             solicitacao.setAtivo(false);
+            solicitacao.setStatus("inativo");
             solicitacao.setMensagem("Solicitação de benefício desativada");
             solicitacaoBeneficioRepository.save(solicitacao);
             return true;
@@ -133,15 +133,20 @@ public class SolicitacaoBeneficioService {
 
 // listar total de beneficios por cpf
 public TotalBeneficiosPorCpfDTO calcularTotalDeBeneficiosPorCpf(String cpf) {
-    List<SolicitacaoBeneficio> solicitacoes = solicitacaoBeneficioRepository.findByCpf(cpf);
+    List<SolicitacaoBeneficio> solicitacoes = solicitacaoBeneficioRepository.findSolicitacaoBeneficioByAtivoAndCpf(true,cpf);
 
-    // Filtra apenas os benefícios concedidos (status = "ativo")
+
+    if (solicitacoes.isEmpty()) {
+        return new TotalBeneficiosPorCpfDTO(cpf, "solicitação desativada", BigDecimal.ZERO);
+    }
+
+    // Filtra apenas os benefícios concedidos
     BigDecimal total = solicitacoes.stream()
             .filter(s -> "ativo".equalsIgnoreCase(s.getStatus()))
             .map(SolicitacaoBeneficio::getValorConcedido)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    // Se teve pelo menos um benefício concedido
+    // Se teve pelo menos um benefício concedido,
     String status = total.compareTo(BigDecimal.ZERO) > 0 ? "concedido" : "não concedido";
 
     return new TotalBeneficiosPorCpfDTO(cpf, status, total);

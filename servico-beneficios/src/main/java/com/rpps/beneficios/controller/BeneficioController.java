@@ -25,7 +25,6 @@ public class BeneficioController {
     public ResponseEntity<BeneficioDTO> criarBeneficio(@RequestBody Beneficio beneficio) {
         Beneficio criado = BeneficioService.criarBeneficio(beneficio);
 
-        // Cria um DTO a partir do objeto Beneficio salvo
         BeneficioDTO dto = new BeneficioDTO(
                 criado.getIdBeneficio(),
                 criado.getTipo(),
@@ -45,7 +44,7 @@ public class BeneficioController {
     public ResponseEntity<List<BeneficioDTO>> listarBeneficios() {
         List<Beneficio> beneficios = BeneficioService.listarBeneficio();
 
-        // Converter cada Beneficio em BeneficioDTO
+
         List<BeneficioDTO> dtos = beneficios.stream()
                 .map(b -> new BeneficioDTO(
                         b.getIdBeneficio(),
@@ -84,8 +83,7 @@ public class BeneficioController {
     }
 
 
-    // deletar logicamente beneficios
-    // nao precisa de dto, só retorna mensagem
+    //desativar beneficio
     @PatchMapping("/{id}/desativar")
     public ResponseEntity<String> desativarBeneficio(@PathVariable int id) {
         boolean resultado = BeneficioService.desativarBeneficio(id);
@@ -96,7 +94,7 @@ public class BeneficioController {
             return ResponseEntity.status(404).body("Benefício não encontrado");
         }
 
-      // acho que tenho que criar um endpoint que retorna um beneficio por vez
+
     }
 
 }

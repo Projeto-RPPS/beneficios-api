@@ -4,11 +4,14 @@ package com.rpps.beneficios.controller;
 import com.rpps.beneficios.DTO.CriarSolicitacaoBeneficioDTO;
 import com.rpps.beneficios.DTO.RetornarSolicitacaoBeneficioDTO;
 import com.rpps.beneficios.DTO.TotalBeneficiosPorCpfDTO;
+import com.rpps.beneficios.model.SolicitacaoBeneficio;
 import com.rpps.beneficios.service.SolicitacaoBeneficioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/beneficios/solicitacao")
@@ -44,6 +47,14 @@ public class SolicitacaoBeneficioController {
         }
 
     }
+
+    // listar solicitacoes
+    @GetMapping
+    public ResponseEntity<List<SolicitacaoBeneficio>> listarTodasSolicitacoes() {
+        List<SolicitacaoBeneficio> solicitacoes = solicitacaoBeneficioService.listarTodas();
+        return ResponseEntity.ok(solicitacoes);
+    }
+
 
 
 

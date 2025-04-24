@@ -13,10 +13,8 @@ import java.util.List;
 
 public interface SolicitacaoBeneficioRepository extends JpaRepository<SolicitacaoBeneficio, Integer> {
 
-    // Método para listar apenas as solicitações ativas
-    List<SolicitacaoBeneficio> findByAtivoTrue();
 
-    List<SolicitacaoBeneficio> findByCpf(String cpf);
+    List<SolicitacaoBeneficio> findSolicitacaoBeneficioByAtivoAndCpf(Boolean ativo, String cpf);
 
 
 }

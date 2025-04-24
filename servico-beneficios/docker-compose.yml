@@ -13,6 +13,11 @@ services:
       - "5434:5432"
     networks:
       - shared_network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -31,7 +36,10 @@ services:
       - shared_network
 
     depends_on:
-      - postgres
+        postgres:
+          condition: service_healthy
+
+
     environment:
       DATASOURCE_URL: ${DATASOURCE_URL}
       POSTGRES_USER: ${POSTGRES_USER}

@@ -15,7 +15,6 @@ FROM eclipse-temurin:21-jdk-alpine
 
 # Define o diretório de trabalho
 WORKDIR /app
-
 # Copia o JAR da etapa anterior
 COPY --from=builder /app/target/*.jar app.jar
 
