@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 @Data
 @AllArgsConstructor
@@ -26,13 +28,16 @@ public class RetornarSolicitacaoBeneficioDTO {
 
     @JsonGetter("valorConcedido")
     public String formatarValorConcedido() {
-        return valorConcedido.setScale(2, RoundingMode.HALF_UP).toString();
+        NumberFormat formato = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+        return formato.format(valorConcedido);
     }
 
     @JsonGetter("totalBeneficios")
     public String formatarTotalBeneficios() {
-        return totalBeneficios.setScale(2, RoundingMode.HALF_UP).toString();
+        NumberFormat formato = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+        return formato.format(totalBeneficios);
     }
+
 
 }
 

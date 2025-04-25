@@ -16,5 +16,4 @@ public interface SolicitacaoBeneficioRepository extends JpaRepository<Solicitaca
 
     List<SolicitacaoBeneficio> findSolicitacaoBeneficioByAtivoAndCpf(Boolean ativo, String cpf);
 
-
 }

@@ -4,6 +4,8 @@ import com.rpps.beneficios.DTO.*;
 import com.rpps.beneficios.model.Beneficio;
 import com.rpps.beneficios.model.SolicitacaoBeneficio;
 import com.rpps.beneficios.repository.SolicitacaoBeneficioRepository;
+//import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import com.rpps.beneficios.repository.BeneficioRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
 
 
 import java.net.URLEncoder;
@@ -24,10 +27,9 @@ import java.util.stream.Collectors;
 
 @Service
 
+
+
 public class SolicitacaoBeneficioService {
-
-
-
 
     @Autowired
     private BeneficioRepository beneficioRepository;
@@ -40,75 +42,87 @@ public class SolicitacaoBeneficioService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Value("${contribuicoes.api.endpoint}")
+    private String contribuicoesApiEndpoint;
 
-    // cria solicitação e já fazer a analise da solicitado do beneficio
+
+
+    // cria solicitação
     public RetornarSolicitacaoBeneficioDTO criarSolicitacao(CriarSolicitacaoBeneficioDTO dto) {
-        String cpf = dto.getCpf();
-        int beneficioId = dto.getBeneficioId();
+        Beneficio beneficio = obterBeneficioPorId(dto.getBeneficioId());
+        List<ContribuicaoDTO> contribuicoes = consultarContribuicoesPorCpf(dto.getCpf());
 
-        // Busca o benefício pelo ID
-        Optional<Beneficio> beneficioOpt = beneficioRepository.findById(beneficioId);
-        if (beneficioOpt.isEmpty()) {
-            throw new RuntimeException("Benefício não encontrado");
-        }
+        int totalMeses = contribuicoes.size();
+        BigDecimal media = calcularMediaContribuicoes(contribuicoes);
+        boolean concedido = totalMeses >= beneficio.getTempoMinimoMeses();
 
-        Beneficio beneficio = beneficioOpt.get();
+        String status = concedido ? "ativo" : "inativo";
+        String mensagem = concedido ? "Benefício concedido com sucesso" : "Contribuição insuficiente";
+        BigDecimal valorConcedido = concedido
+                ? calcularValorConcedido(media, beneficio.getPercentualBaseMedioContribuicoes())
+                : BigDecimal.ZERO;
 
+        SolicitacaoBeneficio solicitacao = montarSolicitacao(dto.getCpf(), totalMeses, media, valorConcedido, status, mensagem, beneficio.getTipo());
+        solicitacaoBeneficioRepository.save(solicitacao);
+
+        return new RetornarSolicitacaoBeneficioDTO(
+                dto.getCpf(),
+                totalMeses,
+                valorConcedido,
+                status,
+                mensagem,
+                valorConcedido,
+                beneficio.getTipo(),
+                true
+        );
+
+
+
+    }
+
+
+    private Beneficio obterBeneficioPorId(int id){
+        return beneficioRepository.findBeneficioByIdBeneficioAndAtivoIsTrue(id)
+                .orElseThrow(() -> new RuntimeException("Beneficio não encontrado"));
+    }
+
+    private List<ContribuicaoDTO> consultarContribuicoesPorCpf(String cpf) {
         try {
-            // Chamada para API de Contribuições (Pedro)
-            String url = "http://rpps-api:8084/contribuicoes/cpf/" + URLEncoder.encode(cpf, StandardCharsets.UTF_8);
+            String url = contribuicoesApiEndpoint + URLEncoder.encode(cpf, StandardCharsets.UTF_8);
             ResponseEntity<ContribuicaoDTO[]> response = restTemplate.getForEntity(url, ContribuicaoDTO[].class);
-
-
-            List<ContribuicaoDTO> contribuicoes = Arrays.asList(response.getBody());
-
-            int totalMeses = contribuicoes.size();
-            BigDecimal soma = contribuicoes.stream()
-                    .map(ContribuicaoDTO::getValorContribuicao)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-
-            BigDecimal mediaContribuicao = totalMeses > 0
-                    ? soma.divide(BigDecimal.valueOf(totalMeses), 2, RoundingMode.HALF_UP)
-                    : BigDecimal.ZERO;
-
-            boolean concedido = totalMeses >= beneficio.getTempoMinimoMeses();
-            String status = concedido ? "ativo" : "inativo";
-            String mensagem = concedido ? "Benefício concedido com sucesso" : "Contribuição insuficiente";
-
-            BigDecimal percentual = BigDecimal.valueOf(beneficio.getPercentualBaseMedioContribuicoes()).divide(BigDecimal.valueOf(100));
-            BigDecimal valorConcedido = concedido ? percentual.multiply(mediaContribuicao) : BigDecimal.ZERO;
-
-            // Cria e salva a solicitação no banco
-            SolicitacaoBeneficio solicitacao = new SolicitacaoBeneficio();
-            solicitacao.setCpf(cpf);
-            solicitacao.setTempoContribuicaoCalculado(totalMeses);
-            solicitacao.setValorMedioContribuicoes(mediaContribuicao);
-            solicitacao.setValorConcedido(valorConcedido);
-            solicitacao.setStatus(status);
-            solicitacao.setMensagem(mensagem);
-            solicitacao.setTotalBeneficios(valorConcedido);
-            solicitacao.setTipoBeneficio(beneficio.getTipo());
-            solicitacao.setAtivo(true);
-
-            solicitacaoBeneficioRepository.save(solicitacao);
-
-            // Retorna DTO com os dados relevantes
-            return new RetornarSolicitacaoBeneficioDTO(
-                    cpf,
-                    totalMeses,
-                    valorConcedido,
-                    status,
-                    mensagem,
-                    valorConcedido,
-                    beneficio.getTipo(),
-                    true
-            );
-
+            return Arrays.asList(response.getBody());
         } catch (Exception e) {
             throw new RuntimeException("Erro ao consultar contribuições: " + e.getMessage());
         }
     }
+
+    private BigDecimal calcularMediaContribuicoes(List<ContribuicaoDTO> lista) {
+        if (lista.isEmpty()) return BigDecimal.ZERO;
+        BigDecimal soma = lista.stream()
+                .map(ContribuicaoDTO::getValorContribuicao)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return soma.divide(BigDecimal.valueOf(lista.size()), 2, RoundingMode.HALF_UP);
+    }
+
+    private BigDecimal calcularValorConcedido(BigDecimal media, int percentual) {
+        return media.multiply(BigDecimal.valueOf(percentual).divide(BigDecimal.valueOf(100)));
+    }
+
+    private SolicitacaoBeneficio montarSolicitacao(String cpf, int meses, BigDecimal media, BigDecimal valor, String status, String mensagem, String tipo) {
+        SolicitacaoBeneficio s = new SolicitacaoBeneficio();
+        s.setCpf(cpf);
+        s.setTempoContribuicaoCalculado(meses);
+        s.setValorMedioContribuicoes(media);
+        s.setValorConcedido(valor);
+        s.setStatus(status);
+        s.setMensagem(mensagem);
+        s.setTotalBeneficios(valor);
+        s.setTipoBeneficio(tipo);
+        s.setAtivo(true);
+        return s;
+    }
+
+
 
 
 
