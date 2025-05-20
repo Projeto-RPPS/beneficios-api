@@ -19,11 +19,9 @@ import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Optional;
 
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 
@@ -51,6 +49,10 @@ public class SolicitacaoBeneficioService {
     public RetornarSolicitacaoBeneficioDTO criarSolicitacao(CriarSolicitacaoBeneficioDTO dto) {
         Beneficio beneficio = obterBeneficioPorId(dto.getBeneficioId());
         List<ContribuicaoDTO> contribuicoes = consultarContribuicoesPorCpf(dto.getCpf());
+
+//        if (contribuicoes.isEmpty()) {
+//            throw new ContribuicaoNotFoundException("Nenhuma contribuição encontrada para o CPF informado.");
+//        }
 
         int totalMeses = contribuicoes.size();
         BigDecimal media = calcularMediaContribuicoes(contribuicoes);
@@ -83,7 +85,8 @@ public class SolicitacaoBeneficioService {
 
     private Beneficio obterBeneficioPorId(int id){
         return beneficioRepository.findBeneficioByIdBeneficioAndAtivoIsTrue(id)
-                .orElseThrow(() -> new RuntimeException("Beneficio não encontrado"));
+//                .orElseThrow(() -> new BeneficioNotFoundException("Benefício não encontrado para o ID: " + id));
+               .orElseThrow(() -> new RuntimeException("Beneficio não encontrado"));
     }
 
     private List<ContribuicaoDTO> consultarContribuicoesPorCpf(String cpf) {
@@ -92,6 +95,7 @@ public class SolicitacaoBeneficioService {
             ResponseEntity<ContribuicaoDTO[]> response = restTemplate.getForEntity(url, ContribuicaoDTO[].class);
             return Arrays.asList(response.getBody());
         } catch (Exception e) {
+//            throw new ContribuicaoNotFoundException("Erro ao consultar contribuições: " + e.getMessage());
             throw new RuntimeException("Erro ao consultar contribuições: " + e.getMessage());
         }
     }
@@ -129,6 +133,12 @@ public class SolicitacaoBeneficioService {
     // lista todas as solicitações (ativas e desativadas)
     public List<SolicitacaoBeneficio> listarTodas() {
         return solicitacaoBeneficioRepository.findAll();
+    }
+
+
+    //Lista apenas as solcitações ativas
+    public List<SolicitacaoBeneficio> listarAtivas() {
+        return solicitacaoBeneficioRepository.findByAtivoTrue();
     }
 
 

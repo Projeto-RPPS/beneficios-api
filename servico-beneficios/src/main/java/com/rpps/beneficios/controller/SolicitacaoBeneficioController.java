@@ -5,6 +5,7 @@ import com.rpps.beneficios.DTO.CriarSolicitacaoBeneficioDTO;
 import com.rpps.beneficios.DTO.RetornarSolicitacaoBeneficioDTO;
 import com.rpps.beneficios.DTO.TotalBeneficiosPorCpfDTO;
 import com.rpps.beneficios.model.SolicitacaoBeneficio;
+import com.rpps.beneficios.repository.SolicitacaoBeneficioRepository;
 import com.rpps.beneficios.service.SolicitacaoBeneficioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/beneficios/solicitacao")
 
@@ -53,6 +55,13 @@ public class SolicitacaoBeneficioController {
     public ResponseEntity<List<SolicitacaoBeneficio>> listarTodasSolicitacoes() {
         List<SolicitacaoBeneficio> solicitacoes = solicitacaoBeneficioService.listarTodas();
         return ResponseEntity.ok(solicitacoes);
+    }
+
+
+    @GetMapping("/ativas")
+    public ResponseEntity<List<SolicitacaoBeneficio>> listarSolicitacoesAtivas() {
+        List<SolicitacaoBeneficio> lista = solicitacaoBeneficioService.listarAtivas();
+        return ResponseEntity.ok(lista);
     }
 
 
